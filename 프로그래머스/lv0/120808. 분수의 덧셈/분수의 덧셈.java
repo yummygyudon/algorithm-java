@@ -1,16 +1,16 @@
 class Solution {
     public int[] solution(int denum1, int num1, int denum2, int num2) {
-        int firstLCM = getLCM(num1, num2);
+        int lcm = getLCM(num1, num2);
         int[] answer = new int[2];
-        int finalDenum = calculate(denum1, num1, firstLCM) + calculate(denum2, num2, firstLCM);
-        int finalGCD ;
-        if(finalDenum >=firstLCM){
-            finalGCD = getGCD(finalDenum, firstLCM);
+        int finalDenum = calculate(denum1, num1, lcm) + calculate(denum2, num2, lcm);
+        int resultGCD ;
+        if(finalDenum >=lcm){
+            resultGCD = getGCD(finalDenum, lcm);
         }else{
-            finalGCD = getGCD(firstLCM, finalDenum);
+            resultGCD = getGCD(lcm, finalDenum);
         }
-        answer[0] = finalDenum / finalGCD;
-        answer[1] = firstLCM / finalGCD;
+        answer[0] = finalDenum / resultGCD;
+        answer[1] = lcm / resultGCD;
         return answer;
     }
     private int calculate(int denum, int num, int lcm){
