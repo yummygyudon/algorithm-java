@@ -1,50 +1,49 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
-		
-		int N =sc.nextInt();
-		int[] number = new int[N];
-		double sum=0;
-		for(int i =0; i<N; i++) {
-			number[i]=sc.nextInt();
-			sum+=number[i];
-		}
-		Arrays.sort(number);
-		
-		//최빈값
-		int[] arr= new int[8001];
-		for(int i=0; i <N;i++) {
-			if(number[i]<0)arr[number[i]*(-1)+4000]++;
-			else arr[number[i]]++;
-		}
-		int count=0;
-		for(int i=0;i<arr.length; i++) {
-			if(count<arr[i])count=arr[i];
-		}
-		int same=0;
-		ArrayList<Integer> list = new ArrayList<>();
-		for(int i=0;i<arr.length; i++) {
-			if(count==arr[i]) {
-				same++;
-			if(i<4001)list.add(i);
-			else if(i>=4001)list.add((-1)*i+4000);
-		}
-		}
-		Collections.sort(list);
-				
-		System.out.println(Math.round(sum/N));
-		System.out.println(number[N/2]);
-		//최빈값
-		if(same==1)System.out.println(list.get(0));
-		else if(same>1)System.out.println(list.get(1));
-		
-		System.out.println(number[N-1]-number[0]);
-	}
+	    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        int quan = Integer.parseInt(reader.readLine());
+        int[] nums = new int[quan];
+        int[] counts = new int[8001];
+
+
+        int sum = 0;
+        for (int i = 0; i < quan; i++) {
+            int inputNum = Integer.parseInt(reader.readLine());
+            nums[i] = inputNum;
+            sum += inputNum;
+            counts[inputNum + 4000]++;
+        }
+        Arrays.sort(nums);
+        // 평균
+        System.out.println(Math.round((float) sum / quan));
+        // 중앙
+        System.out.println(nums[quan/2]);
+
+        // 최빈
+        int maxCnt = -1;
+        for (int count : counts) {
+            if (maxCnt < count) {
+                maxCnt = count;
+            }
+        }
+
+        List<Integer> maxNums= new ArrayList<>();
+        for (int i = 0; i < quan; i++) {
+            if (counts[nums[i] + 4000] == maxCnt) {
+                maxNums.add(nums[i]);
+            }
+        }
+        if (maxNums.size() > maxCnt) {
+            System.out.println(maxNums.get(maxCnt));
+        } else {
+            System.out.println(maxNums.get(0));
+        }
+
+        // 범위
+            System.out.println(nums[quan - 1] - nums[0]);
+        }
 }
