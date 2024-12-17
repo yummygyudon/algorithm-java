@@ -5,49 +5,47 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine(), " ");
-        
-        int N = Integer.parseInt(tokenizer.nextToken()); // 초밥의 개수
-        int D = Integer.parseInt(tokenizer.nextToken()); // 초밥의 가짓수
-        int K = Integer.parseInt(tokenizer.nextToken()); // 연속해서 먹는 초밥의 개수
-        int C = Integer.parseInt(tokenizer.nextToken()); // 쿠폰으로 먹을 수 있는 초밥
+        int N = Integer.parseInt(tokenizer.nextToken()),
+                D = Integer.parseInt(tokenizer.nextToken()),
+                K = Integer.parseInt(tokenizer.nextToken()), // 할인 최소 기준
+                C = Integer.parseInt(tokenizer.nextToken());
 
-        int[] sushi = new int[N];
+        int[] foods = new int[N];
         for (int i = 0; i < N; i++) {
-            sushi[i] = Integer.parseInt(reader.readLine());
+            foods[i] = Integer.parseInt(reader.readLine());
         }
 
-        // 슬라이딩 윈도우 준비
-        int[] count = new int[D + 1]; // 초밥 종류별 개수를 저장
-        int currentVariety = 0;       // 현재 윈도우의 초밥 종류 개수
-        
-        // 초기 윈도우 설정 (0 ~ K-1)
-        for (int i = 0; i < K; i++) {
-            if (count[sushi[i]] == 0) currentVariety++;
-            count[sushi[i]]++;
-        }
-        
-        int maxVariety = currentVariety;
-        
-        // 슬라이딩 윈도우 실행
-        for (int i = 0; i < N; i++) {
-            // 윈도우에서 초밥 하나 제거
-            int removeSushi = sushi[i];
-            count[removeSushi]--;
-            if (count[removeSushi] == 0) currentVariety--;
-
-            // 윈도우에 초밥 하나 추가 (회전 형태를 위해 인덱스를 N으로 나눈다)
-            int addSushi = sushi[(i + K) % N];
-            if (count[addSushi] == 0) currentVariety++;
-            count[addSushi]++;
-
-            // 보너스 초밥 포함 여부 체크
-            if (count[C] == 0) {
-                maxVariety = Math.max(maxVariety, currentVariety + 1);
-            } else {
-                maxVariety = Math.max(maxVariety, currentVariety);
+        int[] eatCounts = new int[D + 1];
+        int nowUniqueCnt = 0;
+        // (주의) 무조건 서로 다른 연속적인 초밥을 먹을 필요는 없음!
+        for (int i = 0; i < K; i++) { // "필수 만족 조건"으로 초기 윈도우 설정 (K개를 먹을 경우)
+            if (eatCounts[foods[i]] == 0) { // 처음 먹는 종류일 경우
+                nowUniqueCnt++;
             }
+            eatCounts[foods[i]]++;
         }
-        
-        System.out.println(maxVariety);
+        int maxUniqueCnt = nowUniqueCnt; // 초기 윈도우 기준
+
+        for (int i = 0; i < N; i++) {
+            int excludeFood = foods[i];
+            eatCounts[excludeFood]--;
+            if (eatCounts[excludeFood] == 0) {
+                nowUniqueCnt--;
+            }
+
+            // 윈도우 조건을 유지해야 하기 때문에 반드시 추가해야함
+            int addFood = foods[(i + K) % N]; // 현재 순서 ~ 필수 조건 개수
+            if (eatCounts[addFood] == 0) {
+                nowUniqueCnt++;
+            }
+            eatCounts[addFood]++;
+
+            if (eatCounts[C] == 0) {
+                maxUniqueCnt = Math.max(maxUniqueCnt, nowUniqueCnt + 1);
+            } else {
+                maxUniqueCnt = Math.max(maxUniqueCnt, nowUniqueCnt);
+            } 
+        }
+        System.out.println(maxUniqueCnt);
     }
 }
