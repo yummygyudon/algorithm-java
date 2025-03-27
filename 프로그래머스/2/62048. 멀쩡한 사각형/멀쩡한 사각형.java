@@ -1,10 +1,11 @@
 class Solution {
     public long solution(int w, int h) {
         long W = w, H = h; 
-        if (W == H) {
-            return W * H - W;
-        }
+        
         long gcd = getGCD(w, h);
+        if (W == H) {
+            return W * H - gcd;
+        }
         return (W * H) - (W + H - gcd);
     }
     private long getGCD(long numA, long numB) {
